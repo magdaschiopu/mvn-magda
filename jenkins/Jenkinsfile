@@ -1,0 +1,22 @@
+library 'mvn-training-library'
+pipeline {
+    agent any
+
+    stages {
+        def helper = load 'Helper.groovy'
+        stage('Run tests') {
+            steps {
+               buildMaven();
+               sh"./mvn clean install";
+               echo helper.foo();
+            }
+        }
+    }
+    post {
+        always {
+            // publish html
+            archiveCucumberReports();
+            deleteDir();
+        }
+    }
+}
